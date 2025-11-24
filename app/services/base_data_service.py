@@ -26,7 +26,7 @@ class BaseDataService(ABC):
             except Exception as e:
                 raise DataNotFoundError(
                     f"Failed to register parquet file for {field_name}: {e}"
-                )
+                ) from e
 
     def get_data_range(self, field_name: str) -> Tuple[date, date]:
         try:
