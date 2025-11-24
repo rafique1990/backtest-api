@@ -23,11 +23,11 @@ def generate_sample_data():
     project_root = Path(__file__).resolve().parent.parent
 
     # 2. Resolve DATA_DIR relative to the project root, not the command line location
-    if Path(settings.DATA_DIR).is_absolute():
-        data_path = Path(settings.DATA_DIR)
+    if Path(settings.LOCAL_DATA_DIR).is_absolute():
+        data_path = Path(settings.LOCAL_DATA_DIR)
     else:
         # Joins project_root with "./data", ensuring it lands in the right place
-        data_path = project_root / settings.DATA_DIR
+        data_path = project_root / settings.LOCAL_DATA_DIR
 
     logger.info(f"Target Data Directory: {data_path}")
 

@@ -58,7 +58,7 @@ class PerformanceMetrics(BaseModel):
             execution_time=execution_time,
             rebalance_dates_processed=len(weights),
             total_rebalance_dates=total_dates,
-            average_assets_per_rebalance=(
+            average_assets_per_rebalance=float(
                 np.mean([len(w) for w in weights.values()]) if weights else 0.0
             ),
             strategy=strategy,

@@ -83,7 +83,9 @@ class DuckDBEngine:
                 CREATE OR REPLACE VIEW {self._safe_identifier(table_name)} AS 
                 SELECT * FROM read_parquet('{file_path}')
             """
-            self._conn.execute(query)
+            if self._conn is None:
+                raise DatabaseError("Database connection not initialized")
+            self._conn.execute(query) # type: ignore[union-attr]
             logger.debug(f"Registered parquet file as table: {table_name}")
 
         except Exception as e:
@@ -93,6 +95,8 @@ class DuckDBEngine:
     def execute_query(self, sql_query: str, params: List = None) -> pd.DataFrame:
         """Execute a SQL query with optional parameters"""
         self._initialize_connection()
+        if self._conn is None:
+            raise DatabaseError("Database connection not initialized")
 
         try:
             if params:

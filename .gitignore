@@ -21,7 +21,11 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
+.idea
+.idea/*
+*.iml
+*.iws
+*.ipr
 # Virtual environments
 .venv
 env/

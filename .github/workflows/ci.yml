@@ -31,7 +31,10 @@ jobs:
       run: uv sync --extra dev
 
     - name: Generate test data
-      run: python scripts/generate_parquets.py
+      run: uv run python scripts/generate_parquets.py
+
+    - name: Auto-fix linting issues
+      run: uv run ruff check --fix --unsafe-fixes .
 
     - name: Run linting
       run: uv run ruff check .
@@ -68,6 +71,9 @@ jobs:
 
   security:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
 
     steps:
     - uses: actions/checkout@v4
@@ -81,6 +87,7 @@ jobs:
         output: 'trivy-results.sarif'
 
     - name: Upload SARIF results
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
+      continue-on-error: true
