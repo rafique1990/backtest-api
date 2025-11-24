@@ -1,0 +1,12 @@
+#TODO: Configure the environment variables for docker compose
+services:
+  api:
+    build: .
+    ports:
+      - "${PORT:-8000}:8000"
+    env_file:
+      - .env
+    volumes:
+      # This allows DuckDB to see the generated parquet files
+      - ./data:/app/data:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --reload
