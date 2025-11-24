@@ -39,4 +39,4 @@ async def run_backtest_prompt(
         )
     except Exception as e:
         logger.error(f"Prompt backtest error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
