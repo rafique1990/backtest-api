@@ -1,6 +1,6 @@
 from datetime import date
 from typing import List
-from dateutil.relativedelta import relativedelta
+from dateutil.relativedelta import relativedelta  # type: ignore[import-untyped]
 from app.backtest.calendar.base import BaseCalendar
 
 
