@@ -10,7 +10,7 @@ from app.core.exceptions import DataNotFoundError
 class BaseDataService(ABC):
     def __init__(self, db_engine: DuckDBEngine = None):
         self.db_engine = db_engine or DuckDBEngine()
-                self._registered_tables: dict[str, str] = {}
+        self._registered_tables: dict[str, str] = {}
 
     @abstractmethod
     def get_data_path(self, field_name: str) -> str:
