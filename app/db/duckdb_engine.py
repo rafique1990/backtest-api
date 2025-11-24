@@ -30,7 +30,7 @@ class DuckDBEngine:
 
             except Exception as e:
                 logger.error(f"Failed to initialize DuckDB: {e}")
-                raise DatabaseError(f"DuckDB initialization failed: {str(e)}")
+                raise DatabaseError(f"DuckDB initialization failed: {str(e)}") from e
 
     def _validate_identifier(self, identifier: str) -> bool:
         """Validate that an identifier (table/column name) is safe"""
@@ -40,7 +40,7 @@ class DuckDBEngine:
     def _safe_identifier(self, identifier: str) -> str:
         """Safely quote an identifier for use in SQL"""
         if not self._validate_identifier(identifier):
-            raise DatabaseError(f"Invalid identifier: {identifier}")
+            raise DatabaseError(f"Invalid identifier: {identifier}") from e
         return identifier  # DuckDB handles quoting internally for most cases
 
     def _detect_date_column(self, table_name: str) -> str:
