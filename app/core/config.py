@@ -6,6 +6,9 @@ from pydantic.fields import PrivateAttr
 
 class LLMConfigMixin:
     _active_llm_api_key: SecretStr = PrivateAttr(SecretStr(""))
+    OPENAI_API_KEY: SecretStr  
+    GEMINI_API_KEY: SecretStr 
+    LLM_PROVIDER: Literal["openai", "gemini"]
 
     def model_post_init(self, context: Any) -> None:
         provider_key_map = {
