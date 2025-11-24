@@ -26,21 +26,21 @@ class LocalDataService(BaseDataService):
             logger.error(
                 f"Permission denied creating data directory {self.data_dir}: {e}"
             )
-            raise DataNotFoundError(f"Cannot create data directory: {e}")
+            raise DataNotFoundError(f"Cannot create data directory: {e}") from e
         except Exception as e:
             logger.error(f"Failed to initialize LocalDataService: {e}")
             raise
 
     def get_data_path(self, field_name: str) -> str:
         if not field_name or not isinstance(field_name, str) or not field_name.strip():
-            raise DataNotFoundError("Field name must be a non-empty string")
+            raise DataNotFoundError("Field name must be a non-empty string") from e
 
         # Validate field name to prevent path traversal - allow unicode and common financial field patterns
         import re
 
         # Allow letters, numbers, underscores, hyphens, dots, and unicode characters
         if not re.match(r"^[\w\-\.,\u00C0-\u017F\u4e00-\u9fff]+$", field_name):
-            raise DataNotFoundError(f"Invalid field name: {field_name}")
+            raise DataNotFoundError(f"Invalid field name: {field_name}") from e
 
         file_path = self.data_dir / f"{field_name}.parquet"
 
