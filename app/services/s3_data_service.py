@@ -23,7 +23,7 @@ class S3DataService(BaseDataService):
                 )
             except Exception as e:
                 logger.error(f"Failed to initialize S3DataService: {e}")
-                raise DataNotFoundError(f"S3 service initialization failed: {e}")
+                raise DataNotFoundError(f"S3 service initialization failed: {e}") from e
 
     def get_data_path(self, field_name: str) -> str:
         if not self.bucket:
