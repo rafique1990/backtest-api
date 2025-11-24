@@ -21,7 +21,7 @@ def run_backtest(request: BacktestRequest, engine: EngineDependency):
         )
     except Exception as e:
         logger.error(f"Backtest error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @router.post("/backtest-prompt", response_model=BacktestResponse)
