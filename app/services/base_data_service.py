@@ -42,7 +42,7 @@ class BaseDataService(ABC):
         except DataNotFoundError:
             raise
         except Exception as e:
-            raise DataNotFoundError(f"Error getting data range for {field_name}: {e}")
+            raise DataNotFoundError(f"Error getting data range for {field_name}: {e}") from e
 
     def get_data_for_dates(
         self, field_name: str, target_dates: List[str]
@@ -59,4 +59,4 @@ class BaseDataService(ABC):
             return df
 
         except Exception as e:
-            raise DataNotFoundError(f"Error getting data for dates: {e}")
+            raise DataNotFoundError(f"Error getting data for dates: {e}") from e
