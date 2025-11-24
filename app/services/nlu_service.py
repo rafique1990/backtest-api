@@ -15,7 +15,7 @@ class NluService:
 
     async def parse_prompt(self, prompt: str) -> BacktestRequest:
         if not prompt or not isinstance(prompt, str):
-            raise PromptParsingError("Prompt must be a non-empty string")
+            raise PromptParsingError("Prompt must be a non-empty string") 
 
         try:
             parsed_data: Dict[str, Any] = await self.client.generate_json(prompt)
@@ -28,4 +28,4 @@ class NluService:
             raise
         except Exception as e:
             logger.error(f"NLU service error: {e}")
-            raise PromptParsingError(f"Failed to process prompt: {e}")
+            raise PromptParsingError(f"Failed to process prompt: {e}") from e
