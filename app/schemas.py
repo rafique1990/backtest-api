@@ -9,10 +9,18 @@ class CalendarRules(BaseModel):
     initial_date: date = Field(..., description="Start date for backtest")
 
 
+from app.utils.validators import validate_data_field
+from pydantic import field_validator
+
 class PortfolioCreation(BaseModel):
     filter_type: Literal["TopN"] = "TopN"
-    n: int = Field(10, description="Number of top assets to select")
+    n: int = Field(10, description="Number of top assets to select", gt=0)
     data_field: str = Field("market_capitalization", description="Field for ranking")
+
+    @field_validator("data_field")
+    @classmethod
+    def validate_field(cls, v: str) -> str:
+        return validate_data_field(v)
 
 
 class WeightingScheme(BaseModel):

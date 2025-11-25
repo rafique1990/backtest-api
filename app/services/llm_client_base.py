@@ -29,6 +29,22 @@ LLM_SCHEMA = {
 SYSTEM_PROMPT = """
 You are a financial AI agent. Analyze natural language backtesting prompts and translate them into strict JSON.
 
+Your response MUST be a JSON object with the following structure:
+{
+    "calendar_rules": {
+        "rule_type": "Quarterly",
+        "initial_date": "YYYY-MM-DD"
+    },
+    "portfolio_creation": {
+        "filter_type": "TopN",
+        "n": <integer>,
+        "data_field": "<string>"
+    },
+    "weighting_scheme": {
+        "weighting_type": "Equal"
+    }
+}
+
 Rules:
 1. Infer missing parameters using defaults (TopN filter, Equal weighting, market_capitalization field)
 2. Initial date should be '2023-01-01' if not specified

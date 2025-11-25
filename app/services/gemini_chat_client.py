@@ -29,7 +29,7 @@ class GeminiChatClient(BaseChatClient):
 
         response = await self.client.post(full_api_url, headers=headers, json=payload)
         response.raise_for_status()
-        response_data = await response.json()
+        response_data = response.json()
 
         # Add proper error handling for response structure
         if not response_data.get("candidates"):
