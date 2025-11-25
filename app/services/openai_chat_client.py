@@ -5,9 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 class OpenAIChatClient(BaseChatClient):
-    """
-    Client for OpenLLM or any OpenAI-compatible API endpoints.
-    """
+    """OpenAI-compatible API client for chat completions."""
 
     def __init__(self, api_key: str, model: str, api_url: str, timeout: int):
         super().__init__(api_key, model, api_url, timeout)
@@ -16,6 +14,7 @@ class OpenAIChatClient(BaseChatClient):
         )
 
     async def _perform_api_call(self, user_prompt: str) -> str:
+        """Call OpenAI-compatible API and extract response content."""
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
@@ -34,9 +33,8 @@ class OpenAIChatClient(BaseChatClient):
         response = await self.client.post(self.api_url, headers=headers, json=payload)
         response.raise_for_status()
 
-        response_data = await response.json()
+        response_data = response.json()
 
-        # Validate OpenAI-compatible response structure
         if not response_data.get("choices"):
             raise ValueError("No choices in OpenLLM response")
 

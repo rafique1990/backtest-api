@@ -29,6 +29,22 @@ LLM_SCHEMA = {
 SYSTEM_PROMPT = """
 You are a financial AI agent. Analyze natural language backtesting prompts and translate them into strict JSON.
 
+Your response MUST be a JSON object with the following structure:
+{
+    "calendar_rules": {
+        "rule_type": "Quarterly",
+        "initial_date": "YYYY-MM-DD"
+    },
+    "portfolio_creation": {
+        "filter_type": "TopN",
+        "n": <integer>,
+        "data_field": "<string>"
+    },
+    "weighting_scheme": {
+        "weighting_type": "Equal"
+    }
+}
+
 Rules:
 1. Infer missing parameters using defaults (TopN filter, Equal weighting, market_capitalization field)
 2. Initial date should be '2023-01-01' if not specified
@@ -39,6 +55,8 @@ Rules:
 
 
 class BaseChatClient(ABC):
+    """Base class for LLM chat clients with async HTTP support."""
+
     def __init__(self, api_key: str, model: str, api_url: str, timeout: int):
         self.api_key = api_key
         self.model = model
@@ -49,18 +67,28 @@ class BaseChatClient(ABC):
 
     @abstractmethod
     async def _perform_api_call(self, user_prompt: str) -> str:
+        """Make API call to LLM provider. Must be implemented by subclasses."""
         pass
 
     async def generate_json(self, user_prompt: str) -> Dict[str, Any]:
+        """
+        Generate structured JSON from natural language prompt.
+        
+        Args:
+            user_prompt: Natural language backtest description
+            
+        Returns:
+            Parsed and validated JSON dict matching BacktestRequest schema
+            
+        Raises:
+            PromptParsingError: If LLM response is invalid or unparseable
+        """
         raw_json_text = "N/A"
         try:
             start_time = time.time()
             raw_json_text = await self._perform_api_call(user_prompt)
 
-            # Validate JSON parsing
             parsed_data = json.loads(raw_json_text)
-
-            # Validate against Pydantic schema
             BacktestRequest(**parsed_data)
 
             end_time = time.time()
@@ -98,7 +126,7 @@ class BaseChatClient(ABC):
             raise PromptParsingError("Service error during prompt parsing") from e
 
     async def close(self):
-        """Close the HTTP client."""
+        """Close the async HTTP client connection."""
         await self.client.aclose()
 
     async def __aenter__(self):

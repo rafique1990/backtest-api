@@ -47,7 +47,7 @@ class TestOpenAIChatClient:
         mock_response = AsyncMock()
         mock_response.status_code = 200
         # Make json() return the data directly (not a coroutine)
-        mock_response.json.return_value = mock_response_data
+        mock_response.json = Mock(return_value=mock_response_data)
         mock_response.raise_for_status = Mock()
 
         with patch.object(
@@ -82,7 +82,7 @@ class TestOpenAIChatClient:
 
         mock_response = AsyncMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = mock_response_data
+        mock_response.json = Mock(return_value=mock_response_data)
         mock_response.raise_for_status = Mock()
 
         with patch.object(
@@ -100,7 +100,7 @@ class TestOpenAIChatClient:
 
         mock_response = AsyncMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = mock_response_data
+        mock_response.json = Mock(return_value=mock_response_data)
         mock_response.raise_for_status = Mock()
 
         with patch.object(
@@ -154,7 +154,7 @@ class TestGeminiChatClient:
 
         mock_response = AsyncMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = mock_response_data
+        mock_response.json = Mock(return_value=mock_response_data)
         mock_response.raise_for_status = Mock()
 
         with patch.object(
@@ -175,7 +175,7 @@ class TestGeminiChatClient:
 
         mock_response = AsyncMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = mock_response_data
+        mock_response.json = Mock(return_value=mock_response_data)
         mock_response.raise_for_status = Mock()
 
         with patch.object(
@@ -193,7 +193,7 @@ class TestGeminiChatClient:
 
         mock_response = AsyncMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = mock_response_data
+        mock_response.json = Mock(return_value=mock_response_data)
         mock_response.raise_for_status = Mock()
 
         with patch.object(
@@ -213,7 +213,7 @@ class TestGeminiChatClient:
 
         mock_response = AsyncMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = mock_response_data
+        mock_response.json = Mock(return_value=mock_response_data)
         mock_response.raise_for_status = Mock()
 
         with patch.object(

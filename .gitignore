@@ -21,8 +21,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-.idea
-.idea/*
 *.iml
 *.iws
 *.ipr
@@ -39,6 +37,7 @@ venv.bak/
 .idea/
 *.swp
 *.swo
+*.iml
 
 # OS
 .DS_Store

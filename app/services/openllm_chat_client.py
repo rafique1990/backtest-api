@@ -33,7 +33,7 @@ class OpenLLMChatClient(BaseChatClient):
 
         response = await self.client.post(self.api_url, headers=headers, json=payload)
         response.raise_for_status()
-        response_data = await response.json()
+        response_data = response.json()
 
         # Validate OpenAI-compatible response structure
         if not response_data.get("choices"):
