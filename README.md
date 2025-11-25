@@ -4,7 +4,7 @@
 
 A high-performance financial backtesting API with NLP capabilities. Built with FastAPI, DuckDB, and SOLID architecture principles.
 
-**🚀 Live Demo:** [https://backtest-api-taj7.onrender.com](https://backtest-api-taj7.onrender.com)
+**🚀 Live Demo:** [https://backtest-api-taj7.onrender.com/docs](https://backtest-api-taj7.onrender.com/docs)
 
 ## Features
 
@@ -42,44 +42,75 @@ A high-performance financial backtesting API with NLP capabilities. Built with F
 ```
 backtest-api/
 ├── app/
-│   ├── api/              # FastAPI routers & dependencies
-│   │   ├── routes.py     # /backtest & /backtest-prompt endpoints
+│   ├── api/                    # FastAPI routers & dependencies
+│   │   ├── routes.py           # /backtest & /backtest-prompt endpoints
 │   │   └── dependencies.py
-│   ├── backtest/         # Core backtesting engine
-│   │   ├── calendar/     # Rebalance date generation (Quarterly)
-│   │   ├── filters/      # Asset selection (TopN)
-│   │   ├── weighting/    # Portfolio weighting (Equal)
-│   │   ├── engine.py     # Main backtest orchestration
+│   ├── backtest/               # Core backtesting engine
+│   │   ├── calendar/           # Rebalance date generation (Quarterly)
+│   │   │   ├── base.py
+│   │   │   ├── factory.py
+│   │   │   └── quarterly.py
+│   │   ├── filters/            # Asset selection (TopN)
+│   │   │   ├── base.py
+│   │   │   ├── factory.py
+│   │   │   └── topn.py
+│   │   ├── weighting/          # Portfolio weighting (Equal)
+│   │   │   ├── base.py
+│   │   │   ├── equal.py
+│   │   │   └── factory.py
+│   │   ├── engine.py           # Main backtest orchestration
 │   │   └── portfolio_selector.py
-│   ├── core/             # Configuration & exceptions
-│   │   ├── config.py     # Environment-based settings
-│   │   ├── exceptions.py # Custom exception hierarchy
-│   │   └── logging.py    # Structured logging setup
-│   ├── db/               # Data access layer
+│   ├── core/                   # Configuration & exceptions
+│   │   ├── config.py           # Environment-based settings
+│   │   ├── exceptions.py       # Custom exception hierarchy
+│   │   └── logging.py          # Structured logging setup
+│   ├── db/                     # Data access layer
 │   │   └── duckdb_engine.py
-│   ├── services/         # External integrations
-│   │   ├── llm_client_base.py    # Abstract LLM client
+│   ├── services/               # External integrations
+│   │   ├── base_data_service.py
+│   │   ├── llm_client_base.py      # Abstract LLM client
+│   │   ├── llm_factory.py          # LLM provider factory
 │   │   ├── openai_chat_client.py
 │   │   ├── gemini_chat_client.py
-│   │   ├── nlu_service.py        # Prompt parsing orchestration
-│   │   ├── local_data_service.py # Local parquet file access
-│   │   └── s3_data_service.py    # S3 storage (implemented, not used in demo)
-│   ├── utils/            # Shared utilities
-│   │   └── validators.py # Pydantic field validators
-│   ├── schemas.py        # Pydantic models
-│   └── main.py           # Application entrypoint
-├── data/                 # Local parquet files (demo data)
+│   │   ├── openllm_chat_client.py  # Open source LLM support
+│   │   ├── nlu_service.py          # Prompt parsing orchestration
+│   │   ├── local_data_service.py   # Local parquet file access
+│   │   └── s3_data_service.py      # S3 storage (implemented, not used)
+│   ├── utils/                  # Shared utilities
+│   │   └── validators.py       # Input validation & security checks
+│   ├── schemas.py              # Pydantic models
+│   └── main.py                 # Application entrypoint
+├── data/                       # Local parquet files (demo data)
 │   ├── market_capitalization.parquet
 │   ├── prices.parquet
 │   ├── volume.parquet
 │   └── adtv_3_month.parquet
-├── scripts/              # Utility scripts
+├── scripts/                    # Utility scripts
 │   └── generate_parquets.py
-├── tests/                # Test suite (152 tests)
-├── Dockerfile
-├── docker-compose.yml
-├── Makefile              # Development commands
-└── pyproject.toml        # Project metadata & dependencies
+├── tests/                      # Test suite (152 tests)
+│   ├── conftest.py
+│   ├── test_api.py
+│   ├── test_api_edge_cases.py
+│   ├── test_data_services_comprehensive.py
+│   ├── test_duckdb_engine.py
+│   ├── test_engine.py
+│   ├── test_factories.py
+│   ├── test_llm_clients.py
+│   ├── test_nlu_service.py
+│   ├── test_openllm_chat_client.py
+│   ├── test_schemas.py
+│   └── test_validators.py
+├── .github/workflows/          # CI/CD pipelines
+│   └── ci.yml
+├── .pre-commit-config.yaml     # Pre-commit hooks configuration
+├── DECISIONS.txt               # Design decisions documentation
+├── Dockerfile                  # Production container image
+├── docker-compose.yml          # Local Docker setup
+├── Makefile                    # Development commands
+├── pyproject.toml              # Project metadata & dependencies
+├── uv.lock                     # Locked dependencies
+├── render.yaml                 # Render deployment config
+└── README.md
 ```
 
 ---
@@ -94,45 +125,63 @@ backtest-api/
 
 ### Local Development
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/rafique1990/backtest-api.git
-   cd backtest-api
-   ```
+**Complete setup (copy and execute):**
 
-2. **Create virtual environment:**
-   ```bash
-   uv venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/rafique1990/backtest-api.git
+cd backtest-api
 
-3. **Install dependencies:**
-   ```bash
-   make install
-   # Or manually: uv sync
-   
-   # For development (includes test dependencies):
-   make install-dev
-   # Or manually: uv sync --extra dev
-   ```
+# Create virtual environment
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-4. **Configure environment:**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your API keys
-   ```
+# Install dependencies
+make install
+# Or manually: uv sync
 
-5. **Generate sample data:**
-   ```bash
-   make generate
-   # Or manually: uv run python scripts/generate_parquets.py
-   ```
+# For development (includes test dependencies)
+make install-dev
+# Or manually: uv sync --extra dev
 
-6. **Run the application:**
-   ```bash
-   make dev
-   # Or manually: uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-   ```
+# Configure environment
+cp .env.example .env
+# Edit .env with your API keys
+
+# Generate sample data
+make generate
+# Or manually: uv run python scripts/generate_parquets.py
+
+# Run the application
+make dev
+# Or manually: uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 💻 PyCharm Debugging Setup
+
+**Option A: FastAPI Configuration**
+
+1. Go to `Run` > `Edit Configurations`
+2. Click `+` > `Python`
+3. Configure:
+   - **Name**: `FastAPI Debug`
+   - **Module name**: `uvicorn`
+   - **Parameters**: `app.main:app --reload --host 0.0.0.0 --port 8000`
+   - **Working directory**: `/Users/{user name here}/PycharmProjects/backtest-api`
+   - **Python interpreter**: Select your `.venv` interpreter
+4. Click `OK` and run with Debug (Shift+F9)
+
+**Option B: Script Path Configuration**
+
+1. Go to `Run` > `Edit Configurations`
+2. Click `+` > `Python`
+3. Configure:
+   - **Name**: `FastAPI Run`
+   - **Script path**: `/Users/rafiquenazir/PycharmProjects/backtest-api/.venv/bin/uvicorn`
+   - **Parameters**: `app.main:app --reload --host 0.0.0.0 --port 8000`
+   - **Working directory**: `/Users/rafiquenazir/PycharmProjects/backtest-api`
+   - **Path to .env file**: `/Users/rafiquenazir/PycharmProjects/backtest-api/.env`
+4. Click `OK`
 
 ### Docker
 
@@ -681,6 +730,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 **Repository:** [https://github.com/rafique1990/backtest-api](https://github.com/rafique1990/backtest-api)
 
-**Live API:** [https://backtest-api-taj7.onrender.com](https://backtest-api-taj7.onrender.com)
+**Live API:** [https://backtest-api-taj7.onrender.com/docs](https://backtest-api-taj7.onrender.com/docs)
 
 **API Documentation:** [https://backtest-api-taj7.onrender.com/docs](https://backtest-api-taj7.onrender.com/docs)

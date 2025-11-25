@@ -38,7 +38,12 @@ app.include_router(api_router, prefix="/api/v1")
 @app.get("/")
 async def root():
     """Root endpoint with basic API information."""
-    return {"message": "BITA Backtest API", "version": "0.1.0", "status": "running"}
+    return {
+        "message": "BITA Backtest API",
+        "version": "0.1.0",
+        "status": "running",
+        "docs": "https://backtest-api-taj7.onrender.com/docs",
+    }
 
 
 @app.get("/health")
