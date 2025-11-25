@@ -1,5 +1,5 @@
-from typing import List
 import pandas as pd
+
 from app.backtest.filters.base import BaseFilter
 
 
@@ -14,7 +14,7 @@ class TopNFilter(BaseFilter):
         self.n = rules.n
         self.data_field = rules.data_field
 
-    def select(self, data: pd.DataFrame, n: int = None) -> List[str]:
+    def select(self, data: pd.DataFrame, n: int = None) -> list[str]:
         """
         Select top N assets based on the specified data field.
 

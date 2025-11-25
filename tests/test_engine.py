@@ -1,16 +1,17 @@
-import pytest
-from unittest.mock import Mock
 from datetime import date
+from unittest.mock import Mock
+
 import pandas as pd
+import pytest
 
 from app.backtest.engine import BacktestEngine
+from app.core.exceptions import CalendarRuleError, DataNotFoundError
 from app.schemas import (
     BacktestRequest,
     CalendarRules,
     PortfolioCreation,
     WeightingScheme,
 )
-from app.core.exceptions import DataNotFoundError, CalendarRuleError
 
 
 class TestBacktestEngine:

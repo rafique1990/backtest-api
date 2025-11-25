@@ -1,8 +1,9 @@
 import logging
-from app.services.base_data_service import BaseDataService
-from app.db.duckdb_engine import DuckDBEngine
+
 from app.core.config import settings
 from app.core.exceptions import DataNotFoundError
+from app.db.duckdb_engine import DuckDBEngine
+from app.services.base_data_service import BaseDataService
 
 logger = logging.getLogger(__name__)
 

@@ -1,18 +1,17 @@
 import logging
 import time
 from datetime import date
-from typing import Dict, List, Tuple
 
-from app.schemas import (
-    BacktestRequest,
-    PerformanceMetrics,
-    StrategySummary,
-    BacktestWeights,
-)
-from app.services.base_data_service import BaseDataService
 from app.backtest.calendar.factory import get_calendar
 from app.backtest.portfolio_selector import PortfolioSelector
 from app.core.exceptions import CalendarRuleError
+from app.schemas import (
+    BacktestRequest,
+    BacktestWeights,
+    PerformanceMetrics,
+    StrategySummary,
+)
+from app.services.base_data_service import BaseDataService
 
 logger = logging.getLogger(__name__)
 
@@ -25,13 +24,13 @@ class BacktestEngine:
 
     def run(
         self, request: BacktestRequest
-    ) -> Tuple[Dict[str, Dict[str, float]], PerformanceMetrics, List[str]]:
+    ) -> tuple[dict[str, dict[str, float]], PerformanceMetrics, list[str]]:
         """
         Execute backtest strategy over rebalance dates.
-        
+
         Args:
             request: Backtest configuration with calendar, filter, and weighting rules
-            
+
         Returns:
             Tuple of (weights_dict, performance_metrics, warnings)
         """
@@ -110,7 +109,7 @@ class BacktestEngine:
             raise
 
     def _validate_date_range(
-        self, start_date: date, available_range: Tuple[date, date]
+        self, start_date: date, available_range: tuple[date, date]
     ):
         """Validate that start date is within available data range."""
         min_avail, max_avail = available_range

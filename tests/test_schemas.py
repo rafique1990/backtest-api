@@ -1,14 +1,15 @@
 import logging
 from datetime import date
+
 import pytest
 from pydantic import ValidationError
+
 from app.schemas import (
     BacktestRequest,
     CalendarRules,
     PortfolioCreation,
     WeightingScheme,
 )
-
 
 logger = logging.getLogger(__name__)
 

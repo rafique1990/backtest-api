@@ -1,4 +1,3 @@
-from typing import Dict, List
 from app.backtest.weighting.base import BaseWeighting
 
 
@@ -13,7 +12,7 @@ class EqualWeighting(BaseWeighting):
         # Equal weighting doesn't need any special rules
         pass
 
-    def calculate(self, assets: List[str]) -> Dict[str, float]:
+    def calculate(self, assets: list[str]) -> dict[str, float]:
         """
         Calculate equal weights for all assets.
 

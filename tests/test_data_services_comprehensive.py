@@ -1,14 +1,16 @@
-import pytest
-import pandas as pd
 import os
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
-from app.services.local_data_service import LocalDataService
-from app.services.s3_data_service import S3DataService
-from app.services.base_data_service import BaseDataService
+
+import pandas as pd
+import pytest
+
 from app.core.exceptions import DataNotFoundError, FilePermissionError
 from app.db.duckdb_engine import DuckDBEngine
+from app.services.base_data_service import BaseDataService
+from app.services.local_data_service import LocalDataService
+from app.services.s3_data_service import S3DataService
 
 
 class TestBaseDataServiceComprehensive:
@@ -194,7 +196,7 @@ class TestLocalDataServiceComprehensive:
             ("../data", temp_data_dir.parent / "data"),
         ]
 
-        for input_path, expected_path in test_cases:
+        for input_path, _expected_path in test_cases:
             with patch("app.services.local_data_service.settings") as mock_settings:
                 mock_settings.LOCAL_DATA_DIR = input_path
 

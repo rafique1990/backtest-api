@@ -1,9 +1,10 @@
 from typing import Annotated
+
 from fastapi import Depends
 
+from app.backtest.engine import BacktestEngine
 from app.services import get_data_service
 from app.services.nlu_service import NluService
-from app.backtest.engine import BacktestEngine
 
 
 def get_backtest_engine():

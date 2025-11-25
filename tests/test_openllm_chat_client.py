@@ -1,9 +1,12 @@
-import pytest
-from unittest.mock import AsyncMock, Mock, patch
-from app.services.openllm_chat_client import OpenLLMChatClient
-from app.core.exceptions import PromptParsingError
-import httpx
 import json
+from unittest.mock import AsyncMock, Mock, patch
+
+import httpx
+import pytest
+
+from app.core.exceptions import PromptParsingError
+from app.services.openllm_chat_client import OpenLLMChatClient
+
 
 class TestOpenLLMChatClient:
     @pytest.fixture

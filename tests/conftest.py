@@ -1,7 +1,8 @@
-import pytest
-import pandas as pd
-from datetime import date
 import os
+from datetime import date
+
+import pandas as pd
+import pytest
 
 
 @pytest.fixture(scope="session", autouse=True)

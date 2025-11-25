@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import List
+
 import pandas as pd
 
 
 class BaseFilter(ABC):
     @abstractmethod
-    def select(self, data: pd.DataFrame, n: int = None) -> List[str]:
+    def select(self, data: pd.DataFrame, n: int = None) -> list[str]:
         """
         Select assets based on filtering criteria.
 

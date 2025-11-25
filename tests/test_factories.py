@@ -1,4 +1,5 @@
 import pytest
+
 from app.backtest.calendar.factory import get_calendar
 from app.backtest.filters.factory import get_filter
 from app.backtest.weighting.factory import get_weighting

@@ -1,16 +1,16 @@
 from datetime import date
-from typing import Dict, List, Literal
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Literal
+
 import numpy as np
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from app.utils.validators import validate_data_field
 
 
 class CalendarRules(BaseModel):
     rule_type: Literal["Quarterly"] = "Quarterly"
     initial_date: date = Field(..., description="Start date for backtest")
 
-
-from app.utils.validators import validate_data_field
-from pydantic import field_validator
 
 class PortfolioCreation(BaseModel):
     filter_type: Literal["TopN"] = "TopN"
@@ -58,7 +58,7 @@ class PerformanceMetrics(BaseModel):
     def create(
         cls,
         execution_time: float,
-        weights: Dict[str, Dict[str, float]],
+        weights: dict[str, dict[str, float]],
         total_dates: int,
         strategy: StrategySummary,
     ) -> "PerformanceMetrics":
@@ -75,27 +75,27 @@ class PerformanceMetrics(BaseModel):
 
 class BacktestWeights(BaseModel):
     date: str = Field(..., description="Rebalance date in ISO format")
-    weights: Dict[str, float] = Field(..., description="Asset weights for this date")
-    assets: List[str] = Field(..., description="List of assets in portfolio")
+    weights: dict[str, float] = Field(..., description="Asset weights for this date")
+    assets: list[str] = Field(..., description="List of assets in portfolio")
 
 
 class BacktestResult(BaseModel):
-    weights: List[BacktestWeights] = Field(
+    weights: list[BacktestWeights] = Field(
         ..., description="Time-series of portfolio weights"
     )
     performance: PerformanceMetrics = Field(..., description="Performance metrics")
-    warnings: List[str] = Field(
+    warnings: list[str] = Field(
         default_factory=list, description="Any warnings during execution"
     )
 
 
 class BacktestResponse(BaseModel):
     execution_time: float = Field(..., description="Total execution time")
-    weights: Dict[str, Dict[str, float]] = Field(
+    weights: dict[str, dict[str, float]] = Field(
         ..., description="Portfolio weights by date"
     )
     metadata: PerformanceMetrics = Field(..., description="Performance metadata")
-    warnings: List[str] = Field(default_factory=list, description="Execution warnings")
+    warnings: list[str] = Field(default_factory=list, description="Execution warnings")
 
     model_config = ConfigDict(
         json_schema_extra={

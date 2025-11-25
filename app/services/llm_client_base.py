@@ -1,9 +1,10 @@
-from abc import ABC, abstractmethod
-from typing import Dict, Any
-import logging
 import json
-import httpx
+import logging
 import time
+from abc import ABC, abstractmethod
+from typing import Any
+
+import httpx
 from pydantic import ValidationError
 
 from app.core.exceptions import PromptParsingError
@@ -70,16 +71,16 @@ class BaseChatClient(ABC):
         """Make API call to LLM provider. Must be implemented by subclasses."""
         pass
 
-    async def generate_json(self, user_prompt: str) -> Dict[str, Any]:
+    async def generate_json(self, user_prompt: str) -> dict[str, Any]:
         """
         Generate structured JSON from natural language prompt.
-        
+
         Args:
             user_prompt: Natural language backtest description
-            
+
         Returns:
             Parsed and validated JSON dict matching BacktestRequest schema
-            
+
         Raises:
             PromptParsingError: If LLM response is invalid or unparseable
         """

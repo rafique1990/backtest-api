@@ -1,5 +1,6 @@
 import logging
-from app.services.llm_client_base import BaseChatClient, SYSTEM_PROMPT
+
+from app.services.llm_client_base import SYSTEM_PROMPT, BaseChatClient
 
 logger = logging.getLogger(__name__)
 

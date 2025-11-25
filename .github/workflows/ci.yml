@@ -31,7 +31,7 @@ jobs:
       run: uv sync --extra dev
 
     - name: Generate test data
-      run: uv run scripts/generate_parquets.py
+      run: PYTHONPATH=. uv run python scripts/generate_parquets.py
 
     - name: Auto-fix linting issues
       run: uv run ruff check --fix --unsafe-fixes .

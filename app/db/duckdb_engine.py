@@ -1,8 +1,8 @@
 import logging
+import re
+
 import duckdb
 import pandas as pd
-from typing import List, Optional
-import re
 
 from app.core.exceptions import DatabaseError
 
@@ -76,19 +76,19 @@ class DuckDBEngine:
                 raise DatabaseError(f"Invalid file path: {file_path}")
 
             query = f"""
-                CREATE OR REPLACE VIEW {self._safe_identifier(table_name)} AS 
+                CREATE OR REPLACE VIEW {self._safe_identifier(table_name)} AS
                 SELECT * FROM read_parquet('{file_path}')
             """
             if self._conn is None:
                 raise DatabaseError("Database connection not initialized")
-            self._conn.execute(query) # type: ignore[union-attr]
+            self._conn.execute(query)  # type: ignore[union-attr]
             logger.debug(f"Registered parquet file as table: {table_name}")
 
         except Exception as e:
             logger.error(f"Failed to register parquet file {file_path}: {e}")
             raise DatabaseError(f"Parquet registration failed: {str(e)}")
 
-    def execute_query(self, sql_query: str, params: List = None) -> pd.DataFrame:
+    def execute_query(self, sql_query: str, params: list = None) -> pd.DataFrame:
         """Execute a SQL query with optional parameters"""
         self._initialize_connection()
         if self._conn is None:
@@ -112,9 +112,7 @@ class DuckDBEngine:
             logger.error(error_message)
             raise DatabaseError(error_message)
 
-    def get_data_range(
-        self, table_name: str, date_column: Optional[str] = None
-    ) -> tuple:
+    def get_data_range(self, table_name: str, date_column: str | None = None) -> tuple:
         """Get min and max dates from a table"""
         # Validate identifiers
         if not self._validate_identifier(table_name):
@@ -128,8 +126,8 @@ class DuckDBEngine:
             raise DatabaseError(f"Invalid date column: {date_column}")
 
         query = f"""
-        SELECT MIN({self._safe_identifier(date_column)}) as min_date, 
-               MAX({self._safe_identifier(date_column)}) as max_date 
+        SELECT MIN({self._safe_identifier(date_column)}) as min_date,
+               MAX({self._safe_identifier(date_column)}) as max_date
         FROM {self._safe_identifier(table_name)}
         """
         result = self.execute_query(query)
@@ -153,8 +151,8 @@ class DuckDBEngine:
     def filter_data_by_dates(
         self,
         table_name: str,
-        target_dates: List[str],
-        date_column: Optional[str] = None,
+        target_dates: list[str],
+        date_column: str | None = None,
     ) -> pd.DataFrame:
         """Filter data by specific dates"""
         # Validate identifiers
@@ -176,8 +174,8 @@ class DuckDBEngine:
         # Use parameterized query with placeholders
         placeholders = ", ".join(["?" for _ in target_dates])
         query = f"""
-        SELECT * 
-        FROM {self._safe_identifier(table_name)} 
+        SELECT *
+        FROM {self._safe_identifier(table_name)}
         WHERE {self._safe_identifier(date_column)} IN ({placeholders})
         ORDER BY {self._safe_identifier(date_column)}
         """
@@ -190,8 +188,8 @@ class DuckDBEngine:
         date_value: str,
         value_column: str,
         n: int,
-        date_column: Optional[str] = None,
-    ) -> List[str]:
+        date_column: str | None = None,
+    ) -> list[str]:
         """Get top N securities by value for a specific date"""
         # Validate identifiers
         if not self._validate_identifier(table_name):

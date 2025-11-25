@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List
 
 
 class BaseWeighting(ABC):
     @abstractmethod
-    def calculate(self, assets: List[str]) -> Dict[str, float]:
+    def calculate(self, assets: list[str]) -> dict[str, float]:
         """
         Calculate weights for assets.
 

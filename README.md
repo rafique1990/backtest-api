@@ -161,6 +161,183 @@ make down
 
 ---
 
+## 🔧 Developer Workflow
+
+### Pre-commit Hooks Setup
+
+Pre-commit hooks automatically fix linting issues before every commit, preventing CI/CD failures.
+
+**One-time Setup:**
+
+```bash
+# 1. Install dev dependencies (includes pre-commit)
+uv sync --extra dev
+
+# 2. Activate pre-commit hooks
+pre-commit install
+
+# 3. Test it works
+pre-commit run --all-files
+```
+
+**How it works:**
+- Every `git commit` automatically runs ruff to fix linting issues
+- If files are modified, review the changes and commit again
+- Never worry about linting failures in CI/CD again
+
+**Manual linting check:**
+```bash
+# Check for issues
+uv run ruff check .
+
+# Auto-fix issues
+uv run ruff check --fix --unsafe-fixes .
+```
+
+### Git Workflow
+
+We follow a **develop-main branching strategy** with feature branches:
+
+```
+main (production)
+ ↑
+ └── develop (integration)
+      ↑
+      ├── feature/your-feature-1
+      ├── feature/your-feature-2
+      └── fix/bug-fix
+```
+
+**Workflow Steps:**
+
+1. **Create a feature branch from develop:**
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make changes and commit:**
+   ```bash
+   git add .
+   git commit -m "feat: add your feature"
+   # Pre-commit hooks run automatically here
+   ```
+
+3. **Push to remote:**
+   ```bash
+   git push -u origin feature/your-feature-name
+   ```
+
+4. **Create Pull Request:**
+   - Create PR: `feature/your-feature-name` → `develop`
+   - Wait for CI/CD to pass
+   - Request review
+   - Merge to develop
+
+5. **Merge develop to main (release):**
+   ```bash
+   git checkout main
+   git merge develop --squash
+   git commit -m "release: version x.x.x"
+   git push origin main
+   ```
+
+**Branch Naming Conventions:**
+- `feature/` - New features
+- `fix/` - Bug fixes
+- `chore/` - Maintenance tasks
+- `docs/` - Documentation updates
+
+### Troubleshooting CI/CD Failures
+
+#### Linting Errors
+
+**Problem:** CI fails with "Found X errors"
+
+**Solution:**
+```bash
+# Run linting locally
+uv run ruff check .
+
+# Auto-fix issues
+uv run ruff check --fix --unsafe-fixes .
+
+# Commit fixes
+git add .
+git commit -m "fix: resolve linting issues"
+git push
+```
+
+#### Test Failures
+
+**Problem:** CI fails on pytest
+
+**Solution:**
+```bash
+# Run tests locally
+uv run pytest -v
+
+# Run with coverage
+uv run pytest -v --cov=app
+
+# Run specific test
+uv run pytest tests/test_specific.py -v
+```
+
+#### Module Not Found Errors
+
+**Problem:** `ModuleNotFoundError: No module named 'app'`
+
+**Solution:**
+```bash
+# Set PYTHONPATH and run
+PYTHONPATH=. uv run python scripts/your_script.py
+
+# Or run tests with proper path
+PYTHONPATH=. uv run pytest
+```
+
+#### Docker Build Failures
+
+**Problem:** Docker container fails to start
+
+**Solution:**
+```bash
+# Rebuild without cache
+docker-compose build --no-cache
+
+# Check logs
+docker-compose logs -f
+
+# Test locally first
+uv run uvicorn app.main:app --reload
+```
+
+### Quick Commands Reference
+
+```bash
+# Development
+make dev              # Start dev server
+make test             # Run tests
+make lint             # Check linting
+make format           # Auto-format code
+
+# Docker
+make build            # Build Docker image
+make run              # Start containers
+make logs             # View logs
+make down             # Stop containers
+
+# Git
+git checkout develop                    # Switch to develop
+git pull origin develop                 # Update develop
+git checkout -b feature/my-feature     # Create feature branch
+pre-commit run --all-files             # Test pre-commit hooks
+```
+
+---
+
 ## 📡 API Endpoints
 
 ### 1. Structured Backtest
