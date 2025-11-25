@@ -25,8 +25,8 @@ RUN uv export --no-dev --no-hashes > requirements.txt && \
 # Copy application code
 COPY . .
 
-# Create data directory
-RUN mkdir -p /app/data
+# Generate parquet data files
+RUN PYTHONPATH=. python scripts/generate_parquets.py
 
 # Expose port
 EXPOSE 8000
