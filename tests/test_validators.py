@@ -1,4 +1,5 @@
 import pytest
+
 from app.utils.validators import validate_data_field
 
 
@@ -29,7 +30,7 @@ class TestValidateDataField:
         """Test that invalid field raises ValueError."""
         with pytest.raises(ValueError) as exc_info:
             validate_data_field("invalid_field")
-        
+
         assert "Invalid data_field: invalid_field" in str(exc_info.value)
         assert "market_capitalization" in str(exc_info.value)
         assert "prices" in str(exc_info.value)
@@ -40,14 +41,14 @@ class TestValidateDataField:
         """Test that empty string raises ValueError."""
         with pytest.raises(ValueError) as exc_info:
             validate_data_field("")
-        
+
         assert "Invalid data_field" in str(exc_info.value)
 
     def test_case_sensitive(self):
         """Test that validation is case-sensitive."""
         with pytest.raises(ValueError):
             validate_data_field("Market_Capitalization")
-        
+
         with pytest.raises(ValueError):
             validate_data_field("PRICES")
 
@@ -55,10 +56,10 @@ class TestValidateDataField:
         """Test that fields with whitespace are rejected."""
         with pytest.raises(ValueError):
             validate_data_field("market capitalization")
-        
+
         with pytest.raises(ValueError):
             validate_data_field(" prices")
-        
+
         with pytest.raises(ValueError):
             validate_data_field("volume ")
 
@@ -66,7 +67,7 @@ class TestValidateDataField:
         """Test that partial matches are not accepted."""
         with pytest.raises(ValueError):
             validate_data_field("market")
-        
+
         with pytest.raises(ValueError):
             validate_data_field("adtv")
 
@@ -79,7 +80,7 @@ class TestValidateDataField:
         """Test that path traversal attempts are rejected."""
         with pytest.raises(ValueError):
             validate_data_field("../../../etc/passwd")
-        
+
         with pytest.raises(ValueError):
             validate_data_field("..\\..\\windows\\system32")
 
@@ -93,7 +94,7 @@ class TestValidateDataField:
             "field&name",
             "test*field",
         ]
-        
+
         for invalid_input in invalid_inputs:
             with pytest.raises(ValueError):
                 validate_data_field(invalid_input)

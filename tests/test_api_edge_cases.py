@@ -1,5 +1,5 @@
-import pytest
 from fastapi.testclient import TestClient
+
 from app.main import app
 
 client = TestClient(app)
@@ -11,13 +11,8 @@ class TestBacktestEndpointEdgeCases:
     def test_missing_portfolio_creation(self):
         """Test request missing portfolio_creation field."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -26,15 +21,12 @@ class TestBacktestEndpointEdgeCases:
     def test_missing_weighting_scheme(self):
         """Test request missing weighting_scheme field."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
-            }
+                "data_field": "market_capitalization",
+            },
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -46,11 +38,9 @@ class TestBacktestEndpointEdgeCases:
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -59,17 +49,13 @@ class TestBacktestEndpointEdgeCases:
     def test_missing_initial_date_in_calendar_rules(self):
         """Test calendar_rules missing initial_date."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly"
-            },
+            "calendar_rules": {"rule_type": "Quarterly"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -80,16 +66,14 @@ class TestBacktestEndpointEdgeCases:
         payload = {
             "calendar_rules": {
                 "rule_type": "Monthly",  # Invalid - only Quarterly supported
-                "initial_date": "2024-11-25"
+                "initial_date": "2024-11-25",
             },
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -97,18 +81,13 @@ class TestBacktestEndpointEdgeCases:
     def test_invalid_filter_type(self):
         """Test invalid filter_type value."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "LowN",  # Invalid - only TopN supported
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -116,18 +95,15 @@ class TestBacktestEndpointEdgeCases:
     def test_invalid_weighting_type(self):
         """Test invalid weighting_type value."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
             "weighting_scheme": {
                 "weighting_type": "MAX"  # Invalid - only Equal supported
-            }
+            },
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -135,18 +111,13 @@ class TestBacktestEndpointEdgeCases:
     def test_invalid_data_field(self):
         """Test invalid data_field value."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "profit"  # Invalid field
+                "data_field": "profit",  # Invalid field
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -155,18 +126,13 @@ class TestBacktestEndpointEdgeCases:
     def test_negative_n_value(self):
         """Test negative n value."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": -5,  # Invalid
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         # Should either reject or handle gracefully
@@ -175,18 +141,13 @@ class TestBacktestEndpointEdgeCases:
     def test_zero_n_value(self):
         """Test zero n value."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 0,  # Edge case
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code in [400, 422]
@@ -196,16 +157,14 @@ class TestBacktestEndpointEdgeCases:
         payload = {
             "calendar_rules": {
                 "rule_type": "Quarterly",
-                "initial_date": "25-11-2024"  # Wrong format
+                "initial_date": "25-11-2024",  # Wrong format
             },
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -215,16 +174,14 @@ class TestBacktestEndpointEdgeCases:
         payload = {
             "calendar_rules": {
                 "rule_type": "Quarterly",
-                "initial_date": "2030-01-01"  # Future date
+                "initial_date": "2030-01-01",  # Future date
             },
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         # Should handle gracefully - might succeed or fail depending on data
@@ -233,18 +190,13 @@ class TestBacktestEndpointEdgeCases:
     def test_very_old_date(self):
         """Test very old date before data availability."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "1900-01-01"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "1900-01-01"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code in [200, 400]
@@ -259,7 +211,7 @@ class TestBacktestEndpointEdgeCases:
         payload = {
             "calendar_rules": None,
             "portfolio_creation": None,
-            "weighting_scheme": None
+            "weighting_scheme": None,
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -267,19 +219,14 @@ class TestBacktestEndpointEdgeCases:
     def test_extra_fields(self):
         """Test payload with extra unexpected fields."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            },
-            "extra_field": "should be ignored"
+            "weighting_scheme": {"weighting_type": "Equal"},
+            "extra_field": "should be ignored",
         }
         response = client.post("/api/v1/backtest", json=payload)
         # Pydantic should ignore extra fields by default
@@ -288,18 +235,13 @@ class TestBacktestEndpointEdgeCases:
     def test_string_instead_of_integer_n(self):
         """Test string value for n field."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": "ten",  # String instead of int
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -307,18 +249,13 @@ class TestBacktestEndpointEdgeCases:
     def test_sql_injection_in_data_field(self):
         """Test SQL injection attempt in data_field."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization; DROP TABLE users;"
+                "data_field": "market_capitalization; DROP TABLE users;",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -326,18 +263,13 @@ class TestBacktestEndpointEdgeCases:
     def test_path_traversal_in_data_field(self):
         """Test path traversal attempt in data_field."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-11-25"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-11-25"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "../../../etc/passwd"
+                "data_field": "../../../etc/passwd",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         assert response.status_code == 422
@@ -345,18 +277,13 @@ class TestBacktestEndpointEdgeCases:
     def test_valid_request_all_fields(self):
         """Test valid request with all required fields."""
         payload = {
-            "calendar_rules": {
-                "rule_type": "Quarterly",
-                "initial_date": "2024-01-01"
-            },
+            "calendar_rules": {"rule_type": "Quarterly", "initial_date": "2024-01-01"},
             "portfolio_creation": {
                 "filter_type": "TopN",
                 "n": 10,
-                "data_field": "market_capitalization"
+                "data_field": "market_capitalization",
             },
-            "weighting_scheme": {
-                "weighting_type": "Equal"
-            }
+            "weighting_scheme": {"weighting_type": "Equal"},
         }
         response = client.post("/api/v1/backtest", json=payload)
         # Should succeed or fail gracefully depending on data availability
@@ -370,21 +297,19 @@ class TestBacktestEndpointEdgeCases:
     def test_all_valid_data_fields(self):
         """Test all valid data_field values."""
         valid_fields = ["market_capitalization", "prices", "volume", "adtv_3_month"]
-        
+
         for field in valid_fields:
             payload = {
                 "calendar_rules": {
                     "rule_type": "Quarterly",
-                    "initial_date": "2024-01-01"
+                    "initial_date": "2024-01-01",
                 },
                 "portfolio_creation": {
                     "filter_type": "TopN",
                     "n": 5,
-                    "data_field": field
+                    "data_field": field,
                 },
-                "weighting_scheme": {
-                    "weighting_type": "Equal"
-                }
+                "weighting_scheme": {"weighting_type": "Equal"},
             }
             response = client.post("/api/v1/backtest", json=payload)
             assert response.status_code in [200, 400], f"Failed for field: {field}"
@@ -441,9 +366,7 @@ class TestBacktestPromptEndpointEdgeCases:
 
     def test_prompt_missing_data_field(self):
         """Test prompt missing data field."""
-        payload = {
-            "prompt": "Run backtest with top 15 securities starting 2023-06-01"
-        }
+        payload = {"prompt": "Run backtest with top 15 securities starting 2023-06-01"}
         response = client.post("/api/v1/backtest-prompt", json=payload)
         # Should use default market_capitalization
         assert response.status_code in [200, 400]
@@ -489,9 +412,9 @@ class TestBacktestPromptEndpointEdgeCases:
         prompts = [
             "Run backtest with top 10 securities by ADTV starting 2023-01-01",
             "Run backtest with top 10 securities by average daily trading volume starting 2023-01-01",
-            "Run backtest with top 10 securities by adtv_3_month starting 2023-01-01"
+            "Run backtest with top 10 securities by adtv_3_month starting 2023-01-01",
         ]
-        
+
         for prompt_text in prompts:
             payload = {"prompt": prompt_text}
             response = client.post("/api/v1/backtest-prompt", json=payload)

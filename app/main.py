@@ -1,9 +1,11 @@
 import logging
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
 from app.api.routes import router as api_router
 from app.core.config import settings
 from app.core.logging import setup_logging
-from fastapi import FastAPI
 
 logger = logging.getLogger(__name__)
 

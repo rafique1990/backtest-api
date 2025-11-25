@@ -1,6 +1,7 @@
 from datetime import date
-from typing import List
+
 from dateutil.relativedelta import relativedelta  # type: ignore[import-untyped]
+
 from app.backtest.calendar.base import BaseCalendar
 
 
@@ -14,7 +15,7 @@ class QuarterlyCalendar(BaseCalendar):
         """
         self.initial_date = rules.initial_date
 
-    def generate_dates(self, start_date: date, end_date: date) -> List[date]:
+    def generate_dates(self, start_date: date, end_date: date) -> list[date]:
         """
         Generate quarterly dates between start_date and end_date.
 

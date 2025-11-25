@@ -1,10 +1,12 @@
-import pytest
-from unittest.mock import AsyncMock, patch, Mock
-import httpx
 import json
-from app.services.openai_chat_client import OpenAIChatClient
-from app.services.gemini_chat_client import GeminiChatClient
+from unittest.mock import AsyncMock, Mock, patch
+
+import httpx
+import pytest
+
 from app.core.exceptions import PromptParsingError
+from app.services.gemini_chat_client import GeminiChatClient
+from app.services.openai_chat_client import OpenAIChatClient
 
 
 class TestOpenAIChatClient:

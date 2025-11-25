@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException
 import logging
 
-from app.schemas import BacktestRequest, BacktestResponse, PromptIn
-from app.api.dependencies import EngineDependency, NluServiceDependency
+from fastapi import APIRouter, HTTPException
 
+from app.api.dependencies import EngineDependency, NluServiceDependency
+from app.schemas import BacktestRequest, BacktestResponse, PromptIn
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

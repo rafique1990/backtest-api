@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from datetime import date
-from typing import List
 
 
 class BaseCalendar(ABC):
     @abstractmethod
-    def generate_dates(self, start_date: date, end_date: date) -> List[date]:
+    def generate_dates(self, start_date: date, end_date: date) -> list[date]:
         """
         Generate rebalancing dates between start and end dates.
 

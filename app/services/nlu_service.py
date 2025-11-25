@@ -1,8 +1,8 @@
 import logging
-from typing import Dict, Any
+from typing import Any
 
-from app.schemas import BacktestRequest
 from app.core.exceptions import PromptParsingError
+from app.schemas import BacktestRequest
 from app.services.llm_factory import get_llm_client
 
 logger = logging.getLogger(__name__)
@@ -18,13 +18,13 @@ class NluService:
     async def parse_prompt(self, prompt: str) -> BacktestRequest:
         """
         Parse natural language prompt into structured BacktestRequest.
-        
+
         Args:
             prompt: Natural language backtest description
-            
+
         Returns:
             Validated BacktestRequest object
-            
+
         Raises:
             PromptParsingError: If prompt is invalid or parsing fails
         """
@@ -32,10 +32,10 @@ class NluService:
             raise PromptParsingError("Prompt must be a non-empty string")
 
         try:
-            parsed_data: Dict[str, Any] = await self.client.generate_json(prompt)
+            parsed_data: dict[str, Any] = await self.client.generate_json(prompt)
             request = BacktestRequest(**parsed_data)
 
-            logger.info(f"Successfully parsed prompt into BacktestRequest")
+            logger.info("Successfully parsed prompt into BacktestRequest")
             return request
 
         except PromptParsingError:

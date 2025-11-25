@@ -1,11 +1,13 @@
-import pytest
-import pandas as pd
-import duckdb
-from unittest.mock import patch
-import tempfile
 import os
-from app.db.duckdb_engine import DuckDBEngine
+import tempfile
+from unittest.mock import patch
+
+import duckdb
+import pandas as pd
+import pytest
+
 from app.core.exceptions import DatabaseError
+from app.db.duckdb_engine import DuckDBEngine
 
 
 class TestDuckDBEngine:
@@ -120,17 +122,21 @@ class TestDuckDBEngine:
     def test_get_data_range_custom_date_column(self, duckdb_engine):
         """Test data range with custom date column name"""
         duckdb_engine._initialize_connection()
-        duckdb_engine._conn.execute("""
+        duckdb_engine._conn.execute(
+            """
             CREATE TABLE custom_dates (
                 custom_date_col DATE,
                 value FLOAT
             )
-        """)
-        duckdb_engine._conn.execute("""
-            INSERT INTO custom_dates VALUES 
+        """
+        )
+        duckdb_engine._conn.execute(
+            """
+            INSERT INTO custom_dates VALUES
             ('2024-01-01', 100.0),
             ('2024-01-05', 200.0)
-        """)
+        """
+        )
 
         min_date, max_date = duckdb_engine.get_data_range(
             "custom_dates", "custom_date_col"
@@ -211,20 +217,24 @@ class TestDuckDBEngine:
     def test_get_top_n_securities_multiple_rows(self, duckdb_engine):
         """Test top N securities with multiple rows per date"""
         duckdb_engine._initialize_connection()
-        duckdb_engine._conn.execute("""
+        duckdb_engine._conn.execute(
+            """
             CREATE TABLE multi_securities (
                 date DATE,
                 security VARCHAR,
                 value FLOAT
             )
-        """)
-        duckdb_engine._conn.execute("""
-            INSERT INTO multi_securities VALUES 
+        """
+        )
+        duckdb_engine._conn.execute(
+            """
+            INSERT INTO multi_securities VALUES
             ('2024-01-01', 'AAPL', 100.0),
             ('2024-01-01', 'MSFT', 150.0),
             ('2024-01-01', 'GOOG', 200.0),
             ('2024-01-02', 'TSLA', 50.0)
-        """)
+        """
+        )
 
         result = duckdb_engine.get_top_n_securities(
             table_name="multi_securities",
@@ -238,18 +248,22 @@ class TestDuckDBEngine:
     def test_get_top_n_securities_n_larger_than_available(self, duckdb_engine):
         """Test top N securities where N is larger than available securities"""
         duckdb_engine._initialize_connection()
-        duckdb_engine._conn.execute("""
+        duckdb_engine._conn.execute(
+            """
             CREATE TABLE few_securities (
                 date DATE,
                 security VARCHAR,
                 value FLOAT
             )
-        """)
-        duckdb_engine._conn.execute("""
-            INSERT INTO few_securities VALUES 
+        """
+        )
+        duckdb_engine._conn.execute(
+            """
+            INSERT INTO few_securities VALUES
             ('2024-01-01', 'AAPL', 100.0),
             ('2024-01-01', 'MSFT', 150.0)
-        """)
+        """
+        )
 
         result = duckdb_engine.get_top_n_securities(
             table_name="few_securities",
@@ -264,17 +278,21 @@ class TestDuckDBEngine:
     def test_get_top_n_securities_no_data_for_date(self, duckdb_engine):
         """Test top N securities with no data for specified date"""
         duckdb_engine._initialize_connection()
-        duckdb_engine._conn.execute("""
+        duckdb_engine._conn.execute(
+            """
             CREATE TABLE date_test (
                 date DATE,
                 security VARCHAR,
                 value FLOAT
             )
-        """)
-        duckdb_engine._conn.execute("""
-            INSERT INTO date_test VALUES 
+        """
+        )
+        duckdb_engine._conn.execute(
+            """
+            INSERT INTO date_test VALUES
             ('2024-01-01', 'AAPL', 100.0)
-        """)
+        """
+        )
 
         result = duckdb_engine.get_top_n_securities(
             table_name="date_test",
@@ -288,17 +306,21 @@ class TestDuckDBEngine:
     def test_get_top_n_securities_n_zero(self, duckdb_engine):
         """Test top N securities with N=0"""
         duckdb_engine._initialize_connection()
-        duckdb_engine._conn.execute("""
+        duckdb_engine._conn.execute(
+            """
             CREATE TABLE test_n_zero (
                 date DATE,
                 security VARCHAR,
                 value FLOAT
             )
-        """)
-        duckdb_engine._conn.execute("""
-            INSERT INTO test_n_zero VALUES 
+        """
+        )
+        duckdb_engine._conn.execute(
+            """
+            INSERT INTO test_n_zero VALUES
             ('2024-01-01', 'AAPL', 100.0)
-        """)
+        """
+        )
 
         result = duckdb_engine.get_top_n_securities(
             table_name="test_n_zero", date_value="2024-01-01", value_column="value", n=0

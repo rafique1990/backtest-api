@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from datetime import date
-from typing import Tuple, List
+
 import pandas as pd
 
-from app.db.duckdb_engine import DuckDBEngine
 from app.core.exceptions import DataNotFoundError
+from app.db.duckdb_engine import DuckDBEngine
 
 
 class BaseDataService(ABC):
@@ -28,7 +28,7 @@ class BaseDataService(ABC):
                     f"Failed to register parquet file for {field_name}: {e}"
                 )
 
-    def get_data_range(self, field_name: str) -> Tuple[date, date]:
+    def get_data_range(self, field_name: str) -> tuple[date, date]:
         try:
             self._register_table(field_name)
             table_name = self._registered_tables[field_name]
@@ -45,7 +45,7 @@ class BaseDataService(ABC):
             raise DataNotFoundError(f"Error getting data range for {field_name}: {e}")
 
     def get_data_for_dates(
-        self, field_name: str, target_dates: List[str]
+        self, field_name: str, target_dates: list[str]
     ) -> pd.DataFrame:
         try:
             self._register_table(field_name)

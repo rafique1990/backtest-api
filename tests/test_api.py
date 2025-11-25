@@ -1,18 +1,19 @@
-import pytest
-from unittest.mock import Mock, AsyncMock, patch
-from fastapi.testclient import TestClient
 from datetime import date
+from unittest.mock import AsyncMock, Mock, patch
 
+import pytest
+from fastapi.testclient import TestClient
+
+from app.core.exceptions import DataNotFoundError, PromptParsingError
 from app.main import app
 from app.schemas import (
     BacktestRequest,
     CalendarRules,
-    PortfolioCreation,
-    WeightingScheme,
     PerformanceMetrics,
+    PortfolioCreation,
     StrategySummary,
+    WeightingScheme,
 )
-from app.core.exceptions import DataNotFoundError, PromptParsingError
 
 
 class TestApiEndpoints:

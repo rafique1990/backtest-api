@@ -1,6 +1,6 @@
 import logging
+
 import pandas as pd
-from typing import Dict
 
 from app.backtest.filters.factory import get_filter
 from app.backtest.weighting.factory import get_weighting
@@ -20,7 +20,7 @@ class PortfolioSelector:
 
     def select_and_weight(
         self, current_data: pd.DataFrame, date_str: str
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Select assets and calculate weights for current date.
 

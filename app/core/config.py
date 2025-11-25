@@ -1,13 +1,14 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Any, Literal
+
 from pydantic import Field, SecretStr
-from typing import Literal, Any
 from pydantic.fields import PrivateAttr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class LLMConfigMixin:
-    _active_llm_api_key: SecretStr = PrivateAttr(SecretStr(""))
-    OPENAI_API_KEY: SecretStr  
-    GEMINI_API_KEY: SecretStr 
+    _active_llm_api_key: SecretStr = PrivateAttr(default=SecretStr(""))
+    OPENAI_API_KEY: SecretStr
+    GEMINI_API_KEY: SecretStr
     LLM_PROVIDER: Literal["openai", "gemini"]
 
     def model_post_init(self, context: Any) -> None:
@@ -18,9 +19,16 @@ class LLMConfigMixin:
         active_key = provider_key_map.get(self.LLM_PROVIDER)
         if active_key and active_key.get_secret_value():
             self._active_llm_api_key = active_key
+        else:
+            self._active_llm_api_key = SecretStr("")
 
     @property
     def ACTIVE_LLM_API_KEY(self) -> SecretStr:
+        # Ensure we always return a proper SecretStr
+        if not hasattr(self, "_active_llm_api_key") or not isinstance(
+            self._active_llm_api_key, SecretStr
+        ):
+            return SecretStr("")
         return self._active_llm_api_key
 
 

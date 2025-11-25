@@ -1,10 +1,11 @@
-import pytest
-from unittest.mock import AsyncMock, patch
 import logging
+from unittest.mock import AsyncMock, patch
 
+import pytest
+
+from app.core.exceptions import PromptParsingError
 from app.schemas import BacktestRequest
 from app.services.nlu_service import NluService
-from app.core.exceptions import PromptParsingError
 
 logger = logging.getLogger(__name__)
 
