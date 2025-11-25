@@ -62,7 +62,8 @@ backtest-api/
 │   │   ├── openai_chat_client.py
 │   │   ├── gemini_chat_client.py
 │   │   ├── nlu_service.py        # Prompt parsing orchestration
-│   │   └── local_data_service.py # Local parquet file access
+│   │   ├── local_data_service.py # Local parquet file access
+│   │   └── s3_data_service.py    # S3 storage (implemented, not used in demo)
 │   ├── utils/            # Shared utilities
 │   │   └── validators.py # Pydantic field validators
 │   ├── schemas.py        # Pydantic models
@@ -101,7 +102,7 @@ backtest-api/
 
 2. **Create virtual environment:**
    ```bash
-   python -m venv .venv
+   uv venv
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    ```
 
@@ -109,6 +110,10 @@ backtest-api/
    ```bash
    make install
    # Or manually: uv sync
+   
+   # For development (includes test dependencies):
+   make install-dev
+   # Or manually: uv sync --extra dev
    ```
 
 4. **Configure environment:**
@@ -129,24 +134,30 @@ backtest-api/
    # Or manually: uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
+### Docker
+
+```bash
+# Build Docker image
+make build
+# Or manually: docker-compose build
+
+# Start services
+make run
+# Or manually: docker-compose up -d
+
+# View logs
+make logs
+# Or manually: docker-compose logs -f
+
+# Stop services
+make down
+# Or manually: docker-compose down
+```
+
 7. **Access the API:**
    - API: http://localhost:8000
    - Interactive Docs: http://localhost:8000/docs
    - Health Check: http://localhost:8000/health
-
-### Docker
-
-```bash
-# Build and start services
-make build
-make up
-
-# View logs
-make logs
-
-# Stop services
-make down
-```
 
 ---
 
@@ -244,12 +255,18 @@ curl -X 'POST' \
     "2023-06-30": {
       "SEC_0": 0.066667,
       "SEC_339": 0.066667,
-      "SEC_491": 0.066667,
-      ...
+      "SEC_491": 0.066667
     },
-    "2023-09-30": { ... },
-    "2023-12-31": { ... },
-    "2024-03-31": { ... }
+    "2023-09-30": {
+      "SEC_870": 0.066667,
+      "SEC_132": 0.066667,
+      "SEC_75": 0.066667
+    },
+    "2023-12-31": {
+      "SEC_784": 0.066667,
+      "SEC_369": 0.066667,
+      "SEC_679": 0.066667
+    }
   },
   "metadata": {
     "execution_time": 0.368,
@@ -483,7 +500,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📞 Contact
+## Links
 
 **Repository:** [https://github.com/rafique1990/backtest-api](https://github.com/rafique1990/backtest-api)
 

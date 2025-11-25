@@ -18,18 +18,28 @@ logger = logging.getLogger(__name__)
 
 
 class BacktestEngine:
+    """Orchestrates portfolio backtesting with configurable strategies."""
+
     def __init__(self, data_service: BaseDataService):
         self.data_service = data_service
 
     def run(
         self, request: BacktestRequest
     ) -> Tuple[Dict[str, Dict[str, float]], PerformanceMetrics, List[str]]:
+        """
+        Execute backtest strategy over rebalance dates.
+        
+        Args:
+            request: Backtest configuration with calendar, filter, and weighting rules
+            
+        Returns:
+            Tuple of (weights_dict, performance_metrics, warnings)
+        """
         start_time = time.time()
         weights_series = []
         warnings = []
 
         try:
-            # Get available data range
             available_range = self.data_service.get_data_range(
                 request.portfolio_creation.data_field
             )
@@ -37,22 +47,18 @@ class BacktestEngine:
                 request.calendar_rules.initial_date, available_range
             )
 
-            # Initialize calendar with rules
             calendar = get_calendar(request.calendar_rules)
             rebalance_dates = calendar.generate_dates(
                 request.calendar_rules.initial_date,
-                date(2025, 1, 22),  # Fixed end date as per requirements
+                date(2025, 1, 22),
             )
 
-            # Initialize portfolio selector
             portfolio_selector = PortfolioSelector(
                 request.portfolio_creation, request.weighting_scheme
             )
 
-            # Process each rebalance date
             for rebalance_date in rebalance_dates:
                 try:
-                    # Get data for current date
                     daily_data = self.data_service.get_data_for_dates(
                         request.portfolio_creation.data_field,
                         [rebalance_date.isoformat()],
@@ -62,7 +68,6 @@ class BacktestEngine:
                         warnings.append(f"No data available for {rebalance_date}")
                         continue
 
-                    # Select assets and calculate weights
                     asset_weights = portfolio_selector.select_and_weight(
                         daily_data, rebalance_date.isoformat()
                     )
@@ -82,10 +87,8 @@ class BacktestEngine:
                     warnings.append(f"Error processing {rebalance_date}: {str(e)}")
                     continue
 
-            # Convert weights to dictionary format
             weights_dict = {weight.date: weight.weights for weight in weights_series}
 
-            # Calculate performance metrics
             execution_time = time.time() - start_time
             strategy_summary = StrategySummary(
                 calendar=request.calendar_rules.rule_type,

@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class DuckDBEngine:
+    """High-performance analytical database engine using DuckDB with vectorized operations."""
+
     def __init__(self, db_path: str = ":memory:"):
         self.db_path = db_path
         self._conn = None
@@ -33,41 +35,35 @@ class DuckDBEngine:
                 raise DatabaseError(f"DuckDB initialization failed: {str(e)}")
 
     def _validate_identifier(self, identifier: str) -> bool:
-        """Validate that an identifier (table/column name) is safe"""
-        # Only allow alphanumeric characters and underscores
+        """Validate identifier is safe (alphanumeric and underscores only)."""
         return bool(re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", identifier))
 
     def _safe_identifier(self, identifier: str) -> str:
-        """Safely quote an identifier for use in SQL"""
+        """Validate and return SQL-safe identifier."""
         if not self._validate_identifier(identifier):
             raise DatabaseError(f"Invalid identifier: {identifier}")
-        return identifier  # DuckDB handles quoting internally for most cases
+        return identifier
 
     def _detect_date_column(self, table_name: str) -> str:
-        """Detect the date column name in a table"""
+        """Auto-detect date column from table schema."""
         try:
-            # Get table schema to detect column names
             schema_query = f"DESCRIBE {self._safe_identifier(table_name)}"
             schema = self.execute_query(schema_query)
 
-            # Look for common date column names
             date_columns = ["date", "__index_level_0__", "timestamp", "time"]
             for col_name in schema["column_name"]:
                 if col_name.lower() in date_columns:
                     return col_name
 
-            # If no common date column found, return the first column
             return schema.iloc[0]["column_name"]
 
         except Exception as e:
             logger.warning(f"Could not detect date column for {table_name}: {e}")
-            return "date"  # Default fallback
+            return "date"
 
     def register_parquet_file(self, table_name: str, file_path: str):
-        """Register a parquet file as a view"""
+        """Register parquet file as queryable view."""
         self._initialize_connection()
-
-        # Validate table name
         if not self._validate_identifier(table_name):
             raise DatabaseError(f"Invalid table name: {table_name}")
 

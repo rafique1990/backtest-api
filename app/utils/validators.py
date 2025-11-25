@@ -2,6 +2,18 @@ from pydantic import field_validator
 from typing import Any
 
 def validate_data_field(v: str) -> str:
+    """
+    Validate data_field against allowed values.
+    
+    Args:
+        v: Field name to validate
+        
+    Returns:
+        Validated field name
+        
+    Raises:
+        ValueError: If field is not in allowed list
+    """
     allowed_fields = [
         "market_capitalization",
         "prices",
